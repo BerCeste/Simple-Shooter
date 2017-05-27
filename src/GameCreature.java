@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 
 abstract class GameCreature extends GameObject implements Moveable {
     private double velX, velY;
+    protected String direction;
 
     GameCreature(BufferedImage image) {
         super(image);

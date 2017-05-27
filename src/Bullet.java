@@ -45,15 +45,18 @@ class Bullet extends GameObject implements Moveable {
             setY(getY() + BULLET_MOVEMENT);
         }
 
-        if(intersects(Main.enemy)) {
-            Player.score++;
-            Main.enemy.destroy();
+        for(Enemy enemy:Main.enemies){
+            if(intersects(enemy)){
+                Player.score++;
+                Main.killToInc--;
+                enemy.destroy();
+            }
         }
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int) getX(), (int) getY(), getImageWidth(), getImageHeight(), null);
+        g.drawImage(getImage(), Main.engine.scaleX(getX()), Main.engine.scaleY(getY()), Main.engine.scaleSize(getImageWidth()), Main.engine.scaleSize(getImageHeight()), null);
     }
 
     boolean intersects(Enemy enemy) {

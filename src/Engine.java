@@ -12,12 +12,16 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public short fps=60;
 	short frameCount=60;
 	public short ups=120;
-	private short updateCount=120;
+	private short updateCount=128;
 	final static Set<Short> pressed=new TreeSet<>();
 	final JFrame frame;
-	private static short GAME_HERTZ=120;
+	private static short GAME_HERTZ=128;
 	static short width=1200;
 	static short height=800;
+	final short firstW;
+	final short firstH;
+	public float scaleX=width/1200;
+	public float scaleY=width/800;
 	static ArrayList<String> variables=new ArrayList<>();
 	static ArrayList<String> resolutions=new ArrayList<>();
 	private File sett;
@@ -41,8 +45,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private static double lastUpdateTime=System.nanoTime();
 	private static double lastRenderTime=System.nanoTime();
 	static Random rng=new Random();
+	String[] res={"10","10"};
 
 	Engine(){
+		engine=this;
 		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
 
 		frame=new JFrame("Football");
@@ -59,10 +65,21 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		frame.setResizable(false);
 		JPanel contPane=new JPanel(new BorderLayout());
 
-		resolutions();
+		resolutions();  //abstact
 		for(String s : resolutions){
 			resolutionObjs.add(new JMenuItem(s));
 		}
+		res=resolutions.get(0).split("\\*");
+		firstW=(short)Integer.parseInt(res[0]);
+		firstH=(short)Integer.parseInt(res[1]);
+
+		System.out.println("first Width: "+firstW+" first height: "+firstH);
+
+		scaleX=width/firstW;
+		scaleY=height/firstH;
+
+		System.out.println("x scale: "+scaleX());
+		System.out.println("y scale: "+scaleY());
 
 		frame.setJMenuBar(menuBarimiz());
 		frame.setContentPane(contPane);
@@ -154,7 +171,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		}
 	}
 	void initialize(){
-		String[] res=resolutionObjs.get(0).getText().split("\\*");
+		res=resolutionObjs.get(0).getText().split("\\*");
 		setFrame(Integer.parseInt(res[0]),Integer.parseInt(res[1]));
 		readSett();
 	}
@@ -302,26 +319,23 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	public static void main(){
 		System.out.println("you must run implemented class");
 	}
-	static float scaleX=width/1200;
-	static float scaleY=width/800;
-	public static double scaleX(){
-		return scaleX;
+	public static float scaleX(){
+		return engine.scaleX;
 	}
-	public static double scaleY(){
+	public float scaleY(){
 		return scaleY;
 	}
-	public static double scaleSize(){
+	public float scaleSize(){
 		return scaleX;
 	}
-	public static int scaleX(double a){
-		return (int)(a*width/1200);
+	public int scaleX(double a){
+		return (int)(a*width/firstW);
 	}
-	public static int scaleY(double a){
-		return (int)(a*height/800);
+	public int scaleY(double a){
+		return (int)(a*height/firstH);
 	}
-	public static int scaleSize(double a){
-		//return (int)(a*scaleX);
-		return (int)(a*width/1200);
+	public int scaleSize(double a){
+		return (int)(a*height/firstH);
 	}
 	public void setFps(int fps){
 		target_fps=(byte)fps;

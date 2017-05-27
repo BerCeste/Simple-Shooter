@@ -1,45 +1,65 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 /**
  *              Created by Batuhan on 6.05.2017.
  */
 
-final class AI {
-    private Player player;
 
-    private Enemy enemy = Main.enemy;
+abstract class AI extends GameCreature{
+    private Player player=Main.player;
 
-    AI(Player player) {
+	AI(BufferedImage image){
+		super(image);
+	}
+
+
+   /* AI(Player player) {
         this.player = player;
-    }
+    }*/
 
-    void moveToPlayer() {
-        if(!horizontallyEqual()) {
-            enemy.setVelY(0);
+	void moveToPlayer() {
+		if(!horizontallyEqual()) {
+			setVelY(0);
 
-            if(enemy.getX() < player.getX() - 25) {
-                enemy.setVelX(Moveable.MOVEMENT);
-                enemy.direction = "+x";
-            } else if(enemy.getX() > player.getX() + 25) {
-                enemy.setVelX(-Moveable.MOVEMENT);
-                enemy.direction = "-x";
-            } else {
-                enemy.setVelX(0);
-            }
-        } else {
-            enemy.setVelX(0);
+			if(getX() < player.getX() - 25) {
+				setVelX(Moveable.MOVEMENT);
+				direction = "+x";
+			} else if(getX() > player.getX() + 25) {
+				setVelX(-Moveable.MOVEMENT);
+				direction = "-x";
+			} else {
+				setVelX(0);
+			}
+		} else {
+			setVelX(0);
 
-            if(enemy.getY() < player.getY() - 25) {
-                enemy.setVelY(Moveable.MOVEMENT);
-                enemy.direction = "+y";
-            } else if(enemy.getY() > player.getY() + 25) {
-                enemy.setVelY(-Moveable.MOVEMENT);
-                enemy.direction = "-y";
-            } else {
-                enemy.setVelY(0);
-            }
-        }
-    }
+			if(getY() < player.getY() - 25) {
+				setVelY(Moveable.MOVEMENT);
+				direction = "+y";
+			} else if(getY() > player.getY() + 25) {
+				setVelY(-Moveable.MOVEMENT);
+				direction = "-y";
+			} else {
+				setVelY(0);
+			}
+		}
+	}
 
-    private boolean horizontallyEqual() {
-        return enemy.getX() <= player.getX() + 25 && enemy.getX() >= player.getX() - 25;
-    }
+	private boolean horizontallyEqual() {
+		return getX() <= player.getX() + 25 && getX() >= player.getX() - 25;
+	}
+
+	@Override
+	public void tick(){
+
+		setX(getX() + getVelX());
+		setY(getY() + getVelY());
+		moveToPlayer();
+		getImageDir();
+	}
+
+	abstract void getImageDir();
+
+	public abstract void render(Graphics g);
 }

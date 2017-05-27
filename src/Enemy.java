@@ -4,16 +4,19 @@ import javafx.scene.shape.Circle;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
  *              Created by Batuhan on 2.05.2017.
  */
 
-class Enemy extends GameCreature implements Moveable {
-    String direction;
+class Enemy extends AI implements Moveable {
+    Player player=Main.player;
 
     private final int ENEMY_SIZE = 32;
+
+    static ArrayList<Enemy> destroy=new ArrayList<>();
 
     Enemy(BufferedImage image) {
         super(image);
@@ -28,19 +31,11 @@ class Enemy extends GameCreature implements Moveable {
     }
 
     @Override
-    public void tick() {
-        setX(getX() + getVelX());
-        setY(getY() + getVelY());
-
-        getImageDir();
-    }
-
-    @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int) getX(), (int) getY(), getImageWidth(), getImageHeight(), null);
+        g.drawImage(getImage(), Main.engine.scaleX(getX()), Main.engine.scaleY(getY()), Main.engine.scaleSize(getImageWidth()), Main.engine.scaleSize(getImageHeight()), null);
     }
 
-    private void getImageDir() {
+    void getImageDir() {
         try {
             if (direction.equals("+x")) {
                 setImage(ImageLoader.loadImage(EnemyPaths.ZOMBIE_R));
@@ -57,7 +52,7 @@ class Enemy extends GameCreature implements Moveable {
     }
 
     private int getRandNum(int min, int max) {
-        return new Random().nextInt(max - min) + min;
+        return Main.rng.nextInt(max - min) + min;
     }
 
     @Override
@@ -65,17 +60,20 @@ class Enemy extends GameCreature implements Moveable {
         super.finalize();
     }
 
-    void implement(AI ai) {
+    /*void implement(AI ai) {
         ai.moveToPlayer();
-    }
+    }*/
 
     boolean outOfBounds() {
-        return (getX() <= 0) || (getX() >= Main.WIDTH - 8) || (getY() <= 40) || (getY() >= Main.WIDTH - 70);
+        return (getX() <= 0) || (getX() >= Main.width - 8) || (getY() <= 40) || (getY() >= Main.width - 70);
     }
 
     void destroy() {
-        Main.setEnemy();
+    	destroy.add(this);
+        Main.addEnemy=true;
     }
+
+
 
     Circle getCircle() {
         return new Circle(getX(), getY(), getImageWidth());

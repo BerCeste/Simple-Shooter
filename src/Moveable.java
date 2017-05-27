@@ -5,7 +5,7 @@ import java.awt.*;
  */
 
 interface Moveable {
-    double MOVEMENT = 3.7;
+    double MOVEMENT = 1.9;
 
     void tick();
 
