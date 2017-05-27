@@ -114,7 +114,7 @@ class Player extends GameCreature implements Controllable,
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int) getX(), (int) getY(), getImageWidth(), getImageHeight(), null);
+        g.drawImage(getImage(), (int)getX(), (int)getY(), getImageWidth(), getImageHeight(), null);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Sathu", Font.PLAIN, 20));
@@ -139,7 +139,7 @@ class Player extends GameCreature implements Controllable,
         } else if(key == DOWN) {
             setVelY(MOVEMENT);
             direction = "+y";
-        } else if(key == RIGHT) {
+        } if(key == RIGHT) {
             setVelX(MOVEMENT);
             direction = "+x";
         } else if(key == LEFT) {

@@ -1,9 +1,8 @@
 import Paths.ImagePaths.Enemies.EnemyPaths;
 import Paths.ImagePaths.Player.PlayerPaths;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -11,8 +10,7 @@ import java.io.IOException;
  *              Created by Batuhan on 2.05.2017.
  */
 
-class Main extends Canvas implements Runnable,
-                                     PlayerPaths {
+class Main extends Engine implements PlayerPaths {
     // Frame constants
     static final int HEIGHT = 600;
     static final int WIDTH = 800;
@@ -31,39 +29,33 @@ class Main extends Canvas implements Runnable,
     static Enemy enemy;
 
     @Override
-    public void run() {
-        init();
+    protected void gameCodes(){
+        tick();
+    }
 
-        long lastTime = System.nanoTime();
-        final double amountOfTicks = 60.0;
-        double ns = 1000000000 / amountOfTicks;
-        double delta = 0;
-        long timer = System.currentTimeMillis();
+    @Override
+    protected void reset(){
 
-        while(running) {
-            long now = System.nanoTime();
-            delta += (now - lastTime) / ns;
-            lastTime = now;
+    }
 
-            if(delta >= 1) {
-                tick();
-                delta--;
-            }
-            render();
+    @Override
+    protected void menuBar(){
 
-            if(System.currentTimeMillis() - timer > 1000) {
-                timer += 1000;
-            }
+    }
 
-            if(enemy.outOfBounds()) {
-                setEnemy();
-            }
-        }
-        stop();
+    @Override
+    protected void actions(ActionEvent e){
+
+    }
+
+    @Override
+    void resolutions(){
+        resolutions.add("800*600");
     }
 
     // Initialize game
-    private void init() {
+    void initialize() {
+    	super.initialize();
         addKeyListener(new KeyInput(player));
     }
 
@@ -73,16 +65,10 @@ class Main extends Canvas implements Runnable,
         enemy.tick();
     }
 
-    private void render() {
-        BufferStrategy bs = getBufferStrategy();
 
-        if(bs == null) {
-            createBufferStrategy(3);
-            return;
-        }
-
-        Graphics g = bs.getDrawGraphics();
-
+	@Override
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
         // TODO: Draw everything between here...
 
         g.drawImage(bg, 0, 0, getWidth(), getHeight(), this); // Black background
@@ -94,27 +80,8 @@ class Main extends Canvas implements Runnable,
         // ...and here
 
         g.dispose();
-        bs.show();
     }
 
-    // Constructs the frame
-    private Main() {
-        running = false;
-
-        JFrame frame = new JFrame(TITLE);
-        frame.setSize(WIDTH, HEIGHT);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-
-        requestFocus();
-
-        frame.add(this);
-
-        frame.setVisible(true);
-
-        start();
-    }
 
     // Starts the game
     private void start() {
@@ -127,9 +94,6 @@ class Main extends Canvas implements Runnable,
         setEnemy();
 
         running = true;
-
-        thread = new Thread(this);
-        thread.start();
     }
 
     // Stops the game
@@ -147,7 +111,9 @@ class Main extends Canvas implements Runnable,
     }
 
     public static void main(String... args) {
-        new Main();
+        Main engine=new Main();
+        engine.start();
+        engine.run();
     }
 
     static void setEnemy() {
