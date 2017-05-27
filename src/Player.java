@@ -118,9 +118,12 @@ class Player extends GameCreature implements Controllable,
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Sathu", Font.PLAIN, 20));
-        g.drawString(String.valueOf(ammo) + "/" + String.valueOf(maxAmmo), 10, 30);
 
-        g.drawString(String.valueOf(score), Main.WIDTH - 40, 30);
+        if(Engine.showStats) {
+            g.drawString(String.valueOf(ammo) + "/" + String.valueOf(maxAmmo), 10, 30);
+
+            g.drawString(String.valueOf(score), Main.WIDTH - 40, 30);
+        }
 
         try {
             for (Bullet bullet : bullets) {

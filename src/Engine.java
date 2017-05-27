@@ -11,8 +11,8 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	static Engine engine;
 	public short fps=60;
 	short frameCount=60;
-	public short ups=120;
-	private short updateCount=120;
+	public short ups=60;
+	private short updateCount=60;
 	final static Set<Short> pressed=new TreeSet<>();
 	final JFrame frame;
 	private static short GAME_HERTZ=120;
@@ -35,7 +35,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	private JMenuItem m2f1; //120 fps
 	private JMenuItem m2f2; //60 fps
 	private JMenuItem m2f3; //30 fps
-	boolean showStats=true;
+	static boolean showStats=true;
 	private static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 	private static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 	private static double lastUpdateTime=System.nanoTime();
@@ -43,7 +43,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	static Random rng=new Random();
 
 	Engine(){
-		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
+		variables.addAll(new ArrayList<>(Arrays.asList("fps","ups")));
 
 		frame=new JFrame("Football");
 		frame.setSize(width+5, height+30);
@@ -323,17 +323,17 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		//return (int)(a*scaleX);
 		return (int)(a*width/1200);
 	}
-	public void setFps(int fps){
+	void setFps(int fps){
 		target_fps=(byte)fps;
 		TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 		System.out.println(fps+" fps");
 	}
-	public void setUps(int ups){
+    void setUps(int ups){
 		GAME_HERTZ=(byte)ups;
 		TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 		System.out.println(ups+" ups");
 	}
-	public void setFrame(int x,int y){
+    void setFrame(int x,int y){
 		width=(short)x;
 		height=(short)y;
 		scaleX=width/1200;
