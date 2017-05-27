@@ -25,6 +25,8 @@ class Player extends GameCreature implements Controllable,
 
     private int maxAmmo = 30;
     private int ammo = maxAmmo;
+	ArrayList<Bullet> bulletsToRemove=new ArrayList<>();
+	double lastShot;
 
     static int score = 0;
 
@@ -35,52 +37,52 @@ class Player extends GameCreature implements Controllable,
         setImageHeight(PLAYER_SIZE);
 
         setX(20);
-        setY((Main.HEIGHT / 2) - 50);
+        setY((Main.height / 2) - 50);
 
         reloading = false;
     }
 
     @Override
-    public void fire() {
-        try {
-            bullets.add(new Bullet(ImageLoader.loadImage(BULLET), getX(), getY(), direction));
+    public void fire(){
+	    if(lastShot+500000000<System.nanoTime()){
+		    try{
+			    bullets.add(new Bullet(ImageLoader.loadImage(BULLET),getX(),getY(),direction));
 
-            for(Bullet bullet : bullets) {
-                if(bullet.getX() < 0 || bullet.getX() >= Main.WIDTH - getImageWidth() - 8 || bullet.getY() < 0 || bullet.getY() >= Main.HEIGHT - 70) {
-                    bullets.remove(bullet);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch(ConcurrentModificationException ex) { }
+			    for(Bullet bullet : bullets){
+				    if(bullet.getX()<0||bullet.getX()>=Main.width-getImageWidth()-8||bullet.getY()<0||bullet.getY()>=Main.height-70){
+					    bulletsToRemove.add(bullet);
+				    }
+			    }
+			    for(Bullet b : bulletsToRemove) bullets.remove(b);
+			    bulletsToRemove.clear();
+		    }catch(IOException e){
+			    e.printStackTrace();
+		    }
 
-        ammo--;
+		    ammo--;
+		    lastShot=System.nanoTime();
+	    }
     }
 
     @Override
     public void tick() {
-        setX(getX() + getVelX());
-        setY(getY() + getVelY());
+	    for(Bullet bullet : bullets){
+		    bullet.tick();
+	    }
 
-        try {
-            for(Bullet bullet : bullets)
-                bullet.tick();
-        } catch (ConcurrentModificationException e) { }
-
-        /* Prevents the player to get out of frame */
-        if(getX() <= 0) {
+        if(getX()+getVelX() <= 0) {
             setX(0);
         }
-        if(getX() >= Main.WIDTH - getImageWidth() - 8) {
+        else if(getX()+getVelX() >= Main.WIDTH - getImageWidth() - 8) {
             setX(Main.WIDTH - getImageWidth() - 8);
-        }
-        if(getY() <= 40) {
+        }else setX(getX() + getVelX());
+
+        if(getY()+getVelY() <= 40) {
             setY(40);
         }
-        if(getY() >= Main.HEIGHT - 70) {
+        else if(getY()+getVelY() >= Main.HEIGHT - 70) {
             setY(Main.HEIGHT - 70);
-        }
-        /* */
+        }else setY(getY() + getVelY());
 
         reload();
 
@@ -88,12 +90,14 @@ class Player extends GameCreature implements Controllable,
             getImageDir();
         }
 
-        if(intersects(Main.enemy)) {
-            Player.score--;
-            Main.enemy.destroy();
-        }
+        for(Enemy enemy:Main.enemies){
+	        if(intersects(enemy)){
+		        Player.score--;
+		        enemy.destroy();
+	        }
 
-        Main.enemy.implement(new AI(this));
+	        //enemy.implement(new AI(this));
+        }
     }
 
     private void reload() {
@@ -114,16 +118,13 @@ class Player extends GameCreature implements Controllable,
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(getImage(), (int)getX(), (int)getY(), getImageWidth(), getImageHeight(), null);
+        g.drawImage(getImage(), Main.engine.scaleX(getX()), Main.engine.scaleY(getY()),  Main.engine.scaleSize(getImageWidth()), Main.engine.scaleSize(getImageHeight()), null);
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Sathu", Font.PLAIN, 20));
+        g.drawString(String.valueOf(ammo) + "/" + String.valueOf(maxAmmo), 10, 30);
 
-        if(Engine.showStats) {
-            g.drawString(String.valueOf(ammo) + "/" + String.valueOf(maxAmmo), 10, 30);
-
-            g.drawString(String.valueOf(score), Main.WIDTH - 40, 30);
-        }
+        g.drawString(String.valueOf(score), Main.width - 40, 30);
 
         try {
             for (Bullet bullet : bullets) {

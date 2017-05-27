@@ -15,19 +15,19 @@ abstract class GameObject {
         setImage(image);
     }
 
-    double getX() {
+    protected double getX() {
         return x;
     }
 
-    void setX(double x) {
+    protected void setX(double x) {
         this.x = x;
     }
 
-    double getY() {
+    protected double getY() {
         return y;
     }
 
-    void setY(double y) {
+    protected void setY(double y) {
         this.y = y;
     }
 
@@ -39,11 +39,11 @@ abstract class GameObject {
         this.image = image;
     }
 
-    int getImageWidth() {
+    protected int getImageWidth() {
         return imageWidth;
     }
 
-    void setImageWidth(int imageWidth) {
+    protected void setImageWidth(int imageWidth) {
         this.imageWidth = imageWidth;
     }
 
@@ -51,7 +51,7 @@ abstract class GameObject {
         return imageHeight;
     }
 
-    void setImageHeight(int imageHeight) {
+    protected void setImageHeight(int imageHeight) {
         this.imageHeight = imageHeight;
     }
 

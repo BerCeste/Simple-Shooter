@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *              Created by Batuhan on 2.05.2017.
@@ -25,8 +26,14 @@ class Main extends Engine implements PlayerPaths {
     // Background image for black
     private BufferedImage bg = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-    private static Player player;
-    static Enemy enemy;
+    static Player player;
+    static ArrayList<Enemy> enemies=new ArrayList<>();
+    static boolean addEnemy=true;
+    public static int killToInc=2;
+
+    Main(){
+        start();
+    }
 
     @Override
     protected void gameCodes(){
@@ -51,6 +58,7 @@ class Main extends Engine implements PlayerPaths {
     @Override
     void resolutions(){
         resolutions.add("800*600");
+        resolutions.add("1200*900");
     }
 
     // Initialize game
@@ -62,7 +70,8 @@ class Main extends Engine implements PlayerPaths {
     private void tick() {
         player.tick();
 
-        enemy.tick();
+        for(Enemy enemy:enemies)enemy.tick();
+        setEnemy();
     }
 
 
@@ -75,7 +84,7 @@ class Main extends Engine implements PlayerPaths {
 
         player.render(g);
 
-        enemy.render(g);
+        for(Enemy enemy:enemies)enemy.render(g);
 
         // ...and here
 
@@ -111,16 +120,26 @@ class Main extends Engine implements PlayerPaths {
     }
 
     public static void main(String... args) {
-        Main engine=new Main();
-        engine.start();
+        engine=new Main();
         engine.run();
     }
 
-    static void setEnemy() {
-        try {
-            enemy = new Enemy(ImageLoader.loadImage(EnemyPaths.ZOMBIE_L));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    void setEnemy(){
+	    for(Enemy e : Enemy.destroy){
+		    enemies.remove(e);
+	    }
+
+	    if(addEnemy){
+		    try{
+			    enemies.add(new Enemy(ImageLoader.loadImage(EnemyPaths.ZOMBIE_L)));
+			    } catch(IOException e){
+				    e.printStackTrace();
+		    }
+		    addEnemy=false;
+	    }
+	    if(killToInc==0){
+		    addEnemy=true;
+		    if(killToInc<8)killToInc=enemies.size()+2;
+	    }
     }
 }
