@@ -128,6 +128,7 @@ class Main extends Engine implements PlayerPaths {
 	    for(Enemy e : Enemy.destroy){
 		    enemies.remove(e);
 	    }
+
 	    if(addEnemy){
 		    try{
 			    enemies.add(new Enemy(ImageLoader.loadImage(EnemyPaths.ZOMBIE_L)));
