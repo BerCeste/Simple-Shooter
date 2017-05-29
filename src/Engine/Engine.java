@@ -1,3 +1,5 @@
+package Engine;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -7,47 +9,48 @@ import java.util.*;
 
 
 public abstract class Engine extends JPanel implements KeyListener, ActionListener, ItemListener{
-	static boolean run=true;
-	static Engine engine;
+	protected static boolean run=true;
+	public static Engine engine;
 	public short fps=60;
 	short frameCount=60;
 	public short ups=120;
 	private short updateCount=128;
-	final static Set<Short> pressed=new TreeSet<>();
-	final JFrame frame;
+	public final static Set<Short> pressed=new TreeSet<>();
+	protected final JFrame frame;
 	private static short GAME_HERTZ=128;
-	static short width=1200;
-	static short height=800;
+	public static short width=1200;
+	public static short height=800;
 	final short firstW;
 	final short firstH;
 	public float scaleX=width/1200;
 	public float scaleY=width/800;
-	static ArrayList<String> variables=new ArrayList<>();
-	static ArrayList<String> resolutions=new ArrayList<>();
+	protected static ArrayList<String> variables=new ArrayList<>();
+	public static ArrayList<String> resolutions=new ArrayList<>();
 	private File sett;
 	private Scanner settings;
 	private Formatter f;
 	private JMenuBar menuBar;
 	static private byte target_fps=60;
-	JMenu menu1; //Game
-	private JMenu menu2; //Engine
+	protected JMenu menu1; //Game
+	private JMenu menu2; //Engine.Engine
 	private JMenuItem m11; //reset
 	private JMenuItem m21; //Show stats
-	private ArrayList<JMenuItem> resolutionObjs=new ArrayList<>();
+	public ArrayList<JMenuItem> resolutionObjs=new ArrayList<>();
 	private JMenuItem m2s1; //%100 speed
 	private JMenuItem m2s2; //%50 speed
 	private JMenuItem m2f1; //120 fps
 	private JMenuItem m2f2; //60 fps
 	private JMenuItem m2f3; //30 fps
-	boolean showStats=true;
+	protected boolean showStats=true;
 	private static double TIME_BETWEEN_UPDATES=1000000000/GAME_HERTZ;
 	private static double TARGET_TIME_BETWEEN_RENDERS=1000000000/target_fps;
 	private static double lastUpdateTime=System.nanoTime();
 	private static double lastRenderTime=System.nanoTime();
-	static Random rng=new Random();
+	public static Random rng=new Random();
 	String[] res={"10","10"};
+	ArrayList<Text> texts=new ArrayList<>();
 
-	Engine(){
+	public Engine(){
 		engine=this;
 		variables.addAll(new ArrayList<String>(Arrays.asList("fps","ups")));
 
@@ -98,13 +101,13 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	}
 
 
-	void run(){
+	public void run(){
 		initialize();
 
 		frame.add(this);
 		frame.setVisible(true);
 
-		new Timer(1000){
+		new TimedEvent(1000){
 			@Override
 			public void run(){
 				while(run){
@@ -170,7 +173,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 			}
 		}
 	}
-	void initialize(){
+	public void initialize(){
 		res=resolutionObjs.get(0).getText().split("\\*");
 		setFrame(Integer.parseInt(res[0]),Integer.parseInt(res[1]));
 		readSett();
@@ -215,7 +218,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 	 * resolutions.add("?width*?height")
 	 * reach resolution should be at same ratio
 	 */
-	abstract void resolutions();
+	public abstract void resolutions();
 
 	private JMenuBar menuBarimiz(){
 		menuBar=new JMenuBar();
@@ -261,6 +264,7 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		if(showStats){
 			g.drawString("FPS: "+fps+"    UPS:"+ups,5,10);
 		}
+		for(Text t:texts)t.render(g);
 	}
 	public void keyTyped(KeyEvent e){}
 	public void keyPressed(KeyEvent e){
@@ -354,22 +358,10 @@ public abstract class Engine extends JPanel implements KeyListener, ActionListen
 		scaleY=width/800;
 		frame.setSize(width+5,height+50);
 	}
-}
+	public void addText(){
 
-class Timer extends Thread{
-	int time;
-	Timer(int miliseconds){
-		super();
-		this.time=miliseconds;
 	}
-
-	@Override
-	public void run(){
-		super.run();
-		try{
-			Thread.sleep(time);
-		}catch(InterruptedException e){
-			e.printStackTrace();
-		}
+	public void removeText(String identity){
+		for(Text t:texts)if(t.identity.equals(identity))texts.remove(t);
 	}
 }

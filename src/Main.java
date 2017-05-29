@@ -1,3 +1,4 @@
+import Engine.Engine;
 import Paths.ImagePaths.Enemies.EnemyPaths;
 import Paths.ImagePaths.Player.PlayerPaths;
 
@@ -56,13 +57,13 @@ class Main extends Engine implements PlayerPaths {
     }
 
     @Override
-    void resolutions(){
+    public void resolutions(){
         resolutions.add("800*600");
         resolutions.add("1200*900");
     }
 
     // Initialize game
-    void initialize() {
+    public void initialize() {
     	super.initialize();
         addKeyListener(new KeyInput(player));
     }
