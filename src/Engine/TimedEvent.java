@@ -1,8 +1,8 @@
 package Engine;
 
-class TimedEvent extends Thread{
+public class TimedEvent extends Thread{
 	int time;
-	TimedEvent(int miliseconds){
+	public TimedEvent(int miliseconds){
 		super();
 		this.time=miliseconds;
 	}

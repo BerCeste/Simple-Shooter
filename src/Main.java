@@ -1,4 +1,4 @@
-import Engine.Engine;
+import Engine.*;
 import Paths.ImagePaths.Enemies.EnemyPaths;
 import Paths.ImagePaths.Player.PlayerPaths;
 
@@ -129,6 +129,7 @@ class Main extends Engine implements PlayerPaths {
 	    for(Enemy e : Enemy.destroy){
 		    enemies.remove(e);
 	    }
+	    Enemy.destroy.clear();
 
 	    if(addEnemy){
 		    try{
